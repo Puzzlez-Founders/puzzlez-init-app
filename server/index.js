@@ -3,19 +3,23 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user.model");
+require("dotenv").config();
 
 const app = express();
-const port = 2512;
+const port = process.env.port || 2512;
 
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb://localhost:27017/Users", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    process.env.mongodb_connection_url || "mongodb://localhost:27017/Users",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("Failed to connect to MongoDB:", error));
 
