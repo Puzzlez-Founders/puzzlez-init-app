@@ -8,7 +8,7 @@ const helmet = require("helmet");
 const User = require("./models/user.model");
 
 const app = express();
-const port = process.env.PORT || 2512;
+const port = process.env.port || 2512;
 
 // Global CORS Setup: Allow all origins and methods
 app.use(cors()); // This allows requests from any origin
@@ -17,7 +17,7 @@ app.use(helmet());
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB_CONNECTION_URL, {
+  .connect(process.env.mongodb_connection_url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
