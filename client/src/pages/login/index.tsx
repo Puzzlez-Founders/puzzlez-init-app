@@ -44,7 +44,9 @@ const SignUp: React.FC = () => {
         formData
       );
       console.log("Response:", response);
+      localStorage.setItem("token", response.data.data);
       alert("Login successful!");
+      window.location.href = "/dashboard";
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
       alert("Login failed! Please try again.");
@@ -61,6 +63,7 @@ const SignUp: React.FC = () => {
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
+              style={{ color: "black" }}
               type="email"
               id="email"
               placeholder="Enter your email"
@@ -82,9 +85,15 @@ const SignUp: React.FC = () => {
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
           <button type="submit" className="submit-btn" disabled={isSubmitting}>
-            {isSubmitting ? "Signing Up..." : "Sign Up"}
+            {isSubmitting ? "Logging In..." : "Log In"}
           </button>
         </form>
+        <p className="login-prompt">
+          Need to Create a new Account?{" "}
+          <a href="/signup" className="login-link">
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
   );

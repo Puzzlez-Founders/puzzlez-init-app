@@ -59,7 +59,8 @@ const SignUp: React.FC = () => {
   return (
     <div className="signup-page">
       <div className="container">
-        <h1 className="title">Sign Up</h1>
+        <h1 className="title">Create Your Account</h1>
+        <p className="subtitle">Sign up to start your journey with us.</p>
         <form className="signup-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
@@ -86,7 +87,6 @@ const SignUp: React.FC = () => {
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
-              style={{ color: "black" }}
               type="password"
               id="password"
               placeholder="Enter your password"
@@ -99,6 +99,12 @@ const SignUp: React.FC = () => {
             {isSubmitting ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
+        <p className="login-prompt">
+          Already have an account?{" "}
+          <a href="/login" className="login-link">
+            Log In
+          </a>
+        </p>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const User = require("./models/user.model"); // Import the User model
+const jwt = require("jsonwebtoken");
+const User = require("./models/user.model");
 
 const app = express();
 const port = 2512;
@@ -43,17 +44,24 @@ app.post("/user/login", async (req: any, res: any) => {
   try {
     const loginUser = await User.findOne({
       email: req.body.email,
-      password: req.body.password,
     });
     if (loginUser) {
-      res
-        .status(200)
-        .json({ status: "ok", message: "Sign up ", data: loginUser });
+      if (loginUser.password !== req.body.password) {
+        res.status(400).json({
+          status: "not cool",
+          message: "Invalid Creds",
+        });
+      } else {
+        res.status(200).json({
+          status: "ok",
+          message: "Login Successfull",
+          data: loginUser,
+        });
+      }
     } else {
       res.status(400).json({
         status: "Not cool",
         message: "No such user found ",
-        data: loginUser,
       });
     }
   } catch (error: any) {

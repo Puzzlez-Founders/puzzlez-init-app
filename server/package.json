@@ -4,7 +4,7 @@
   "description": "Puzzlez Init app",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "nodemon index.js",
     "test": "start server"
   },
   "author": "",
@@ -14,6 +14,7 @@
     "cors": "^2.8.5",
     "experss": "^0.0.1-security",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2"
   },
   "devDependencies": {
