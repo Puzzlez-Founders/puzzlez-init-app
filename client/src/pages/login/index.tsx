@@ -6,7 +6,7 @@ interface FormData {
   password: string;
 }
 
-const SignUp: React.FC = () => {
+const Login: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -99,4 +99,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default Login;

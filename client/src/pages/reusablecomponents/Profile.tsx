@@ -1,7 +1,6 @@
+import user from "@/Types/userinterface";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
-import { user } from "../Interfaces/userinterface";
-
 const Profile = () => {
   const npc = {
     name: "",
