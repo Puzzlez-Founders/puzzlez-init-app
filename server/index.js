@@ -10,7 +10,8 @@ const User = require("./models/user.model");
 const app = express();
 const port = process.env.PORT || 2512;
 
-app.use(cors({ origin: ["https://puzzlez.in"], credentials: true }));
+// Global CORS Setup: Allow all origins and methods
+app.use(cors()); // This allows requests from any origin
 app.use(express.json());
 app.use(helmet());
 
