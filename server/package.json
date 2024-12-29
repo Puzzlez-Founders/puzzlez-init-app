@@ -16,6 +16,7 @@
     "env": "^0.0.2",
     "experss": "^0.0.1-security",
     "express": "^4.21.2",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2"
   },

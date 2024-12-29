@@ -1,108 +1,84 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const helmet = require("helmet");
 const User = require("./models/user.model");
-require("dotenv").config();
 
 const app = express();
-const port = process.env.port || 2512;
-const corsOptions = {
-  origin: ["https://puzzlez.in"], // Allow this specific origin
-  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-  credentials: true, // If cookies or auth headers are sent
-};
+const port = process.env.PORT || 2512;
 
-app.use(cors(corsOptions));
+app.use(cors({ origin: ["https://puzzlez.in"], credentials: true }));
 app.use(express.json());
+app.use(helmet());
 
 // Connect to MongoDB
 mongoose
-  .connect(
-    process.env.mongodb_connection_url || "mongodb://localhost:27017/Users",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.MONGODB_CONNECTION_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("Failed to connect to MongoDB:", error));
-
-app.get("/users", async (req, res) => {
-  try {
-    const newUser = await User.find();
-    res.status(200).json(newUser);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ status: "Something went wrong", message: error.message });
-  }
-});
 
 // Signup Endpoint
 app.post("/user/signup", async (req, res) => {
   try {
-    const newUser = await User.create(req.body); // Create and save a new user
-    res.json({ status: "ok", message: "User created", data: newUser });
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const newUser = await User.create({
+      ...req.body,
+      password: hashedPassword,
+    });
+    res
+      .status(201)
+      .json({ status: "ok", message: "User created", data: newUser });
   } catch (error) {
-    res.status(409).json({ status: "not cool", message: error.message });
+    res.status(409).json({ status: "error", message: error.message });
   }
 });
 
+// Login Endpoint
 app.post("/user/login", async (req, res) => {
   try {
-    const loginUser = await User.findOne({
-      email: req.body.email,
-    });
-    if (loginUser) {
-      if (loginUser.password !== req.body.password) {
-        res.status(400).json({
-          status: "not cool",
-          message: "Invalid Creds",
-        });
-      } else {
-        const token = jwt.sign(
-          {
-            name: loginUser.name,
-            email: loginUser.email,
-          },
-          "WillyBhaii"
-        );
-        res.status(200).json({
-          status: "ok",
-          message: "Login Successfull",
-          data: token,
-        });
-      }
-    } else {
-      res.status(400).json({
-        status: "Not cool",
-        message: "No such user found ",
-      });
+    const user = await User.findOne({ email: req.body.email });
+    if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Invalid credentials" });
     }
+
+    const token = jwt.sign(
+      { email: user.email, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.status(200).json({ status: "ok", message: "Login successful", token });
   } catch (error) {
-    res
-      .status(500)
-      .json({ status: "Something went wrong", message: error.message });
+    res.status(500).json({ status: "error", message: error.message });
   }
 });
 
+// Update Quote
 app.post("/quote", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decodedtoken = jwt.verify(token, "WillyBhaii");
-    const email = decodedtoken.email;
-    const user = User.updateOne(
-      { email: email },
-      { $set: { quote: req.body.quote } }
+    const { email } = jwt.verify(token, process.env.JWT_SECRET);
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { $set: { quote: req.body.quote } },
+      { new: true }
     );
-    res.status(200).json({ status: "ok", quote: user.quote });
+    if (!updatedUser)
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found" });
+    res.status(200).json({ status: "ok", quote: updatedUser.quote });
   } catch (error) {
-    res
-      .status(500)
-      .json({ status: "Something went wrong", message: error.message });
+    res.status(401).json({ status: "error", message: "Unauthorized" });
   }
 });
 
-// Start the server
+// Start Server
 app.listen(port, () => console.log(`Running on http://localhost:${port}`));
