@@ -7,8 +7,13 @@ require("dotenv").config();
 
 const app = express();
 const port = process.env.port || 2512;
+const corsOptions = {
+  origin: ["https://puzzlez.in"], // Allow this specific origin
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+  credentials: true, // If cookies or auth headers are sent
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
