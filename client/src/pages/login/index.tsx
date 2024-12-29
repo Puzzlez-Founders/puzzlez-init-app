@@ -40,7 +40,7 @@ const Login: React.FC = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://localhost:2512/user/login",
+        "https://puzzlez-nmv59oxdx-puzzlezs-projects.vercel.app/user/login",
         formData
       );
       console.log("Response:", response);

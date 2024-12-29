@@ -43,7 +43,7 @@ const SignUp: React.FC = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://localhost:2512/user/signup",
+        "https://puzzlez-nmv59oxdx-puzzlezs-projects.vercel.app/user/signup",
         formData
       );
       console.log("Response:", response);

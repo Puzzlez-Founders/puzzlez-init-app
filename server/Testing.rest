@@ -1,8 +1,8 @@
-get http://localhost:2512/users
+get https://puzzlez-nmv59oxdx-puzzlezs-projects.vercel.app/users
 
 ###
 
-POST  http://localhost:2512/users
+POST  https://puzzlez-nmv59oxdx-puzzlezs-projects.vercel.app/users
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 ###
 
-POST  http://localhost:2512/users/login
+POST  https://puzzlez-nmv59oxdx-puzzlezs-projects.vercel.app/users/login
 Content-Type: application/json
 
 {
