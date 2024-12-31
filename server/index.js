@@ -8,7 +8,7 @@ const helmet = require("helmet");
 const User = require("./models/user.model");
 
 const app = express();
-const port = process.env.port || 2512;
+const port = process.env.port || 8080;
 
 // Global CORS Setup: Allow all origins and methods
 app.use(cors()); // This allows requests from any origin
