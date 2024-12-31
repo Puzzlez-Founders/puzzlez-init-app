@@ -10,26 +10,10 @@ const User = require("./models/user.model");
 const app = express();
 const port = process.env.port || 2512;
 
-// Global CORS Setup: Allow all origins and specific headers
-app.use(
-  cors({
-    origin: "*", // Update this to specific origins in production for security
-    methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Content-Type, x-access-token",
-  })
-);
-
-// Middleware
+// Global CORS Setup: Allow all origins and methods
+app.use(cors()); // This allows requests from any origin
 app.use(express.json());
 app.use(helmet());
-
-// Handle preflight requests
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, x-access-token");
-  res.sendStatus(200);
-});
 
 // Connect to MongoDB
 mongoose
@@ -41,7 +25,7 @@ mongoose
   .catch((error) => console.error("Failed to connect to MongoDB:", error));
 
 // Signup Endpoint
-app.post("/api/user/signup", async (req, res) => {
+app.post("/user/signup", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create({
@@ -57,7 +41,7 @@ app.post("/api/user/signup", async (req, res) => {
 });
 
 // Login Endpoint
-app.post("/api/user/login", async (req, res) => {
+app.post("/user/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
@@ -65,7 +49,6 @@ app.post("/api/user/login", async (req, res) => {
         .status(400)
         .json({ status: "error", message: "Invalid credentials" });
     }
-
     const token = jwt.sign({ email: user.email, name: user.name }, "Willy123", {
       expiresIn: "1h",
     });
@@ -75,8 +58,8 @@ app.post("/api/user/login", async (req, res) => {
   }
 });
 
-// Update Quote Endpoint
-app.post("/api/quote", async (req, res) => {
+// Update Quote
+app.post("/quote", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
     const { email } = jwt.verify(token, "Willy123");
