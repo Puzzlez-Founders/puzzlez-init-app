@@ -79,7 +79,7 @@ app.post("/api/user/login", async (req, res) => {
 app.post("/api/quote", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const { email } = jwt.verify(token, process.env.JWT_SECRET);
+    const { email } = jwt.verify(token, "Willy123");
     const updatedUser = await User.findOneAndUpdate(
       { email },
       { $set: { quote: req.body.quote } },
