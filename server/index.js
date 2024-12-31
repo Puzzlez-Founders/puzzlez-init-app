@@ -66,11 +66,9 @@ app.post("/api/user/login", async (req, res) => {
         .json({ status: "error", message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { email: user.email, name: user.name },
-      "Willy123",
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ email: user.email, name: user.name }, "Willy123", {
+      expiresIn: "1h",
+    });
     res.status(200).json({ status: "ok", message: "Login successful", token });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
