@@ -58,25 +58,5 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
-// Update Quote
-app.post("/quote", async (req, res) => {
-  const token = req.headers["x-access-token"];
-  try {
-    const { email } = jwt.verify(token, "Willy123");
-    const updatedUser = await User.findOneAndUpdate(
-      { email },
-      { $set: { quote: req.body.quote } },
-      { new: true }
-    );
-    if (!updatedUser)
-      return res
-        .status(404)
-        .json({ status: "error", message: "User not found" });
-    res.status(200).json({ status: "ok", quote: updatedUser.quote });
-  } catch (error) {
-    res.status(401).json({ status: "error", message: "Unauthorized" });
-  }
-});
-
 // Start Server
 app.listen(port, () => console.log(`Running on http://localhost:${port}`));
